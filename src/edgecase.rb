@@ -43,22 +43,6 @@ class Object
 end
 
 module EdgeCase
-
-  module Color
-    #shamelessly stolen from redgreen
-    COLORS = { :clear => 0, :red => 31, :green => 32, :yellow => 33, :blue => 34, :magenta => 35, :cyan => 36 }
-    def self.method_missing(color_name, *args)
-      color(color_name) + args.first + color(:clear) 
-    end 
-    def self.color(color)
-      if ENV['NO_COLOR']
-        ""
-      else
-        "\e[#{COLORS[color.to_sym]}m"
-      end
-    end 
-  end
-
   class Sensei
     attr_reader :failure, :failed_test
 
@@ -83,9 +67,9 @@ module EdgeCase
     def accumulate(test)
       if test.passed?
         @pass_count += 1
-        puts Color.green("  #{test.name} has expanded your awareness.")
+        puts "  #{test.name} has expanded your awareness."
       else
-        puts Color.red("  #{test.name} has damaged your karma.")
+        puts "  #{test.name} has damaged your karma."
         @failed_test = test
         @failure = test.failure
         throw :edgecase_exit
@@ -103,19 +87,18 @@ module EdgeCase
     def report
       if failed?
         puts
-        puts Color.green("You have not yet reached enlightenment ...")
-        puts Color.red(failure.message)
+        puts "You have not yet reached enlightenment ..."
+        puts failure.message
         puts
-        puts Color.green("Please meditate on the following code:")
+        puts "Please meditate on the following code:"
         if assert_failed?
-          #puts find_interesting_lines(failure.backtrace)
-          puts find_interesting_lines(failure.backtrace).collect {|l| Color.red(l) }
+          puts find_interesting_lines(failure.backtrace)
         else
-          puts Color.red(failure.backtrace)
+          puts failure.backtrace
         end
         puts
       end
-      puts Color.green(say_something_zenlike)
+      say_something_zenlike
     end
 
     def find_interesting_lines(backtrace)
@@ -129,24 +112,23 @@ module EdgeCase
     def say_something_zenlike
       puts
       if !failed?
-        zen_statement =  "Mountains are again merely mountains"
+        puts "Mountains are again merely mountains"
       else
-        zen_statement = case (@pass_count % 10)
+        case (@pass_count % 10)
         when 0
-          "mountains are merely mountains"
+          puts "mountains are merely mountains"
         when 1, 2
-          "learn the rules so you know how to break them properly"
+          puts "learn the rules so you know how to break them properly"
         when 3, 4
-          "remember that silence is sometimes the best answer"
+          puts "remember that silence is sometimes the best answer"
         when 5, 6
-          "sleep is the best meditation"
+          puts "sleep is the best meditation"
         when 7, 8
-          "when you lose, don't lose the lesson"
+          puts "when you lose, don't lose the lesson"
         else
-          "things are not what they appear to be: nor are they otherwise"
+          puts "things are not what they appear to be: nor are they otherwise"
         end
       end
-      zen_statement
     end
   end
 
@@ -186,7 +168,7 @@ module EdgeCase
 
       def run_tests(accumulator)
         puts
-        puts Color.green("Thinking #{self}")
+        puts "Thinking #{self}"
         testmethods.each do |m|
           self.run_test(m, accumulator) if Koan.test_pattern =~ m.to_s
         end
