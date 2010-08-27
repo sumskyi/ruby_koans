@@ -46,12 +46,18 @@ module EdgeCase
 
   module Color
     #shamelessly stolen from redgreen
+    #
     COLORS = { :clear => 0, :red => 31, :green => 32, :yellow => 33, :blue => 34, :magenta => 35, :cyan => 36 }
     def self.method_missing(color_name, *args)
       color(color_name) + args.first + color(:clear) 
     end 
     def self.color(color)
-      "\e[#{COLORS[color.to_sym]}m"
+      if ENV['NO_COLOR']
+        ""
+      else
+        "\e[#{COLORS[color.to_sym]}m"
+      end
+
     end 
   end
 
