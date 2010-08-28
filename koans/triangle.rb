@@ -14,6 +14,7 @@
 #   about_triangle_project_2.rb
 #
 def triangle(a, b, c)
+  [:equilateral, :isosceles, :scalene][[a,b,c].uniq.size-1]
   # WRITE THIS CODE
 end
 
