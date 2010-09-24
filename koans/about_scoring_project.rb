@@ -30,6 +30,36 @@ require File.expand_path(File.dirname(__FILE__) + '/edgecase')
 # Your goal is to write the score method.
 
 def score(dice)
+  score = 0
+  # [1, 1, 1, 5] => {5=>1, 1=>3}
+  grouped = dice.group_by{|i| i}.
+  inject({}) do |memo, obj|
+    memo[obj.first] = obj.last.count;
+    memo
+  end
+
+  grouped.each do |number, total|
+    case total
+    when 3
+      score += 1000 and next if 1 == number
+      score += number * 100
+    when 1, 2
+      next unless [1, 5].include? number
+      score += ((number == 1)? 100 : 50) * total
+    else
+      next unless [1, 5].include? number
+      lost = total - 3
+      if 1 == number
+        score += 1000
+        score += 100 * lost
+      else
+        score += number * 100
+        score += 50 * lost
+      end
+    end
+  end
+
+  score
   # You need to write this method
 end
 
